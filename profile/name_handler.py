@@ -15,6 +15,7 @@ async def check_and_ask_name(message: types.Message, state: FSMContext):
 
     if user_data and user_data.full_name:
         from keyboards.button_creators.start_keyboard import create_start_keyboard
+        # Если имя уже указано — предлагаем изменить его
         keyboard = ReplyKeyboardMarkup(
             keyboard=[
                 [KeyboardButton(text="Да, изменить")],
@@ -28,6 +29,7 @@ async def check_and_ask_name(message: types.Message, state: FSMContext):
         )
         await state.set_state(UserState.confirm_name_change)
     else:
+        # Если имени нет — запрашиваем ввод имени
         await message.answer("Введите ваше имя (оно будет использоваться для прохождения тестов):")
         await state.set_state(UserState.waiting_for_name)
 

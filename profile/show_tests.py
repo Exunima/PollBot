@@ -4,6 +4,7 @@ from database.tables.users import User
 from screch.survey_results import calculate_survey_results
 
 
+# Показываем пользователю список его тестов с результатами
 async def show_user_tests(message):
     """Выводит список созданных пользователем тестов с результатами"""
     user = await User.get_or_none(telegram_id=message.from_user.id)
@@ -29,7 +30,7 @@ async def show_user_tests(message):
             f"🔄 Попытки: {test.attempts if test.attempts else 'Неограниченно'}\n"
         )
 
-        # ✅ Добавляем вывод лучших результатов пользователей
+        # Добавляем вывод лучших результатов пользователей
         test_results = await TestResult.filter(test=test).all()
         if test_results:
             response += "🏆 Лучшие результаты:\n"
@@ -45,6 +46,7 @@ async def show_user_tests(message):
     await message.answer(response, parse_mode="Markdown")
 
 
+# Итоги пользователя и список его опросов
 async def show_user_surveys(message):
     """Выводит список созданных пользователем опросов с актуальной статистикой"""
     user = await User.get_or_none(telegram_id=message.from_user.id)
@@ -70,7 +72,7 @@ async def show_user_surveys(message):
             f"🔄 Попытки: {survey.attempts}\n"
         )
 
-        # ✅ Добавляем статистику по опросу
+        # Добавляем статистику по опросу
         survey_results = await calculate_survey_results(survey.id)
         response += f"{survey_results}\n"
 

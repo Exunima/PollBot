@@ -39,6 +39,7 @@ async def handle_show_tests(message: types.Message):
     await show_user_tests(message)
 
 
+# Обработчик кнопки "Мои опросы"
 @router.message(lambda message: message.text == "Мои опросы")
 async def handle_show_surveys(message: types.Message):
     """Выводит список опросов пользователя"""
