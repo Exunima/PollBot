@@ -9,6 +9,6 @@ router = Router()
 
 # Подключаем вспомогательные роутеры:
 router.include_router(start_router)           # для старта опроса
-router.include_router(question_router)        # - для обработки вопросов
-router.include_router(answer_router)          # - для обработки ответов
+router.include_router(question_router)        # для обработки вопросов
+router.include_router(answer_router)          # для обработки ответов
 router.include_router(confirm_start_router)   # для подтверждения начала

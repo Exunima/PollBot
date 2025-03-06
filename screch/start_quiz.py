@@ -11,18 +11,21 @@ from time_poll.time_checker import check_survey_expiration
 router = Router()
 
 
+# Обработка команды /start_quiz — запрашиваем у пользователя ключ доступа
 @router.message(Command("start_quiz"))
 async def ask_quiz_key(message: types.Message, state: FSMContext):
     await message.answer("🔑 Введите ключ для прохождения опроса/теста:")
     await state.set_state(QuizState.waiting_for_key)
 
 
+# Проверяем введенный пользователем ключ
 @router.message(QuizState.waiting_for_key)
 async def check_quiz_key(message: types.Message, state: FSMContext):
     key = message.text.strip()
     survey = await Survey.get_or_none(access_key=key)
     test = await Test.get_or_none(access_key=key)
 
+    # Проверяем тип по ключу
     if survey:
         if await check_survey_expiration(survey):
             await message.answer("❌ Время прохождения опроса истекло.")
@@ -34,6 +37,7 @@ async def check_quiz_key(message: types.Message, state: FSMContext):
         await message.answer("❌ Неверный ключ! Попробуйте снова.")
         return
 
+    # Сохраняем данные об опросе в состоянии
     await state.update_data(
         quiz_id=quiz_id,
         quiz_type=quiz_type,

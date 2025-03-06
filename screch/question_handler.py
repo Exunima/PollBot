@@ -8,6 +8,7 @@ from keyboards.button_creators.quiz_answer_keyboard import get_answer_confirm_ke
 router = Router()
 
 
+# Задаем пользователю вопрос с вариантами ответов
 async def ask_question(message: types.Message, state: FSMContext, quiz_type, question):
     options = await (SurveyAnswerOption.filter(question_id=question.id) if quiz_type == "survey"
                      else TestAnswerOption.filter(question_id=question.id))
@@ -17,6 +18,7 @@ async def ask_question(message: types.Message, state: FSMContext, quiz_type, que
         await state.clear()
         return
 
+    # Формируем список вариантов ответа
     options_list = "\n".join([f"{i + 1}. {opt.option_text}" for i, opt in enumerate(options)])
     options_map = {str(i + 1): opt.id for i, opt in enumerate(options)}
 

@@ -10,6 +10,7 @@ from .question_handler import ask_question
 router = Router()
 
 
+# Обработка ответа пользователя
 @router.message(QuizState.waiting_for_answer)
 async def process_test_answer(message: types.Message, state: FSMContext):
     data = await state.get_data()
@@ -20,7 +21,7 @@ async def process_test_answer(message: types.Message, state: FSMContext):
     start_time = datetime.fromisoformat(start_time_str) if start_time_str else None
     current_options = data.get("current_options", {})
 
-    # Проверяем время и попытки перед ответом
+    # Проверяем время и попытки, если это тест
     if quiz_type == "test":
         is_valid = await check_test_time_and_attempts(
             user_id=message.from_user.id,
@@ -33,6 +34,7 @@ async def process_test_answer(message: types.Message, state: FSMContext):
             return
 
     if quiz_type == "survey":
+        # Проверяем и сохраняем ответ на опрос
         answer_option = await SurveyAnswerOption.get_or_none(option_text=message.text, question_id=question_id)
         if not answer_option:
             await message.answer("❌ Ошибка! Выберите вариант из предложенных.")
@@ -44,6 +46,7 @@ async def process_test_answer(message: types.Message, state: FSMContext):
             selected_option=answer_option
         )
 
+        # Переход к следующему вопросу
         next_question = await SurveyQuestion.filter(survey_id=quiz_id, id__gt=question_id).first()
         if next_question:
             await state.update_data(question_id=next_question.id)
@@ -53,7 +56,7 @@ async def process_test_answer(message: types.Message, state: FSMContext):
             await state.clear()
         return
 
-    # Для тестов
+    # Проверка корректности ответов для тестов
     selected_numbers = [num.strip() for num in message.text.split(";")]
     selected_ids = [current_options.get(num) for num in selected_numbers if num in current_options]
 
@@ -66,6 +69,7 @@ async def process_test_answer(message: types.Message, state: FSMContext):
 
     is_correct = set(selected_ids) == correct_options
 
+    # Сохраняем ответы
     for option_id in selected_ids:
         await TestResponse.create(
             question_id=question_id,
@@ -74,6 +78,7 @@ async def process_test_answer(message: types.Message, state: FSMContext):
             is_correct=is_correct
         )
 
+    # Переход к следующему вопросу или подсчет результатов
     next_question = await TestQuestion.filter(test_id=quiz_id, id__gt=question_id).first()
     if next_question:
         await state.update_data(question_id=next_question.id)
