@@ -1,0 +1,17 @@
+# Игнорируем .env
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# SQLite DB
+*.sqlite3
+
+# Логи
+*.log
+
+# IDE
+.vscode/
+.idea/
