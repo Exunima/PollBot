@@ -8,7 +8,7 @@ from creation_survey.Manual_creator.validate_input import is_valid_question, val
 router = Router()
 
 
-# Обработчик ввода времени
+# Устанавливаем время теста и создаем структуру test_data
 @router.message(TestState.waiting_for_duration)
 async def ask_first_question(message: types.Message, state: FSMContext):
     duration = validate_duration(message.text)
@@ -30,9 +30,9 @@ async def ask_first_question(message: types.Message, state: FSMContext):
     test_data = data.get("test_data", {})
 
     if "questions" not in test_data:
-        test_data["questions"] = []  # ✅ Добавляем пустой список вопросов
+        test_data["questions"] = []  # Добавляем пустой список вопросов
 
-    # ✅ Проверяем, есть ли сохраненное название. Если нет — берем из state
+    # Проверяем, есть ли сохраненное название. Если нет — берем из state
     test_data["title"] = test_data.get("title", data.get("title", "Без названия"))
     test_data["creator_id"] = user.id
     test_data["duration_minutes"] = duration if duration > 0 else None
@@ -56,7 +56,7 @@ async def ask_answers(message: types.Message, state: FSMContext):
     test_data = data.get("test_data", {})
 
     if "questions" not in test_data:
-        test_data["questions"] = []  # ✅ Создаем список вопросов, если его нет
+        test_data["questions"] = []  # Создаем список вопросов, если его нет
 
     existing_questions = [q["question_text"] for q in test_data["questions"]]
 
@@ -66,10 +66,10 @@ async def ask_answers(message: types.Message, state: FSMContext):
 
     test_data["questions"].append({
         "question_text": message.text,
-        "answers": []  # ✅ Подготовка для хранения ответов
+        "answers": []  # Подготовка для хранения ответов
     })
 
-    await state.update_data(test_data=test_data)  # ✅ Обновляем `test_data`
+    await state.update_data(test_data=test_data)  # Обновляем `test_data`
 
     await message.answer("Введите варианты ответа, разделяя их `;` (пример: Python; Java; C++; JavaScript)")
     await state.set_state(TestState.waiting_for_answers)
@@ -94,7 +94,7 @@ async def save_answers(message: types.Message, state: FSMContext):
 
     # Проверяем, что test_data существует и содержит список вопросов
     if "questions" not in test_data:
-        test_data["questions"] = []  # ✅ Создаем пустой список, если его нет
+        test_data["questions"] = []  # Создаем пустой список, если его нет
 
     if not test_data["questions"]:
         await message.answer("❌ Ошибка: вопросы не найдены. Начните тест заново.")
@@ -102,7 +102,7 @@ async def save_answers(message: types.Message, state: FSMContext):
 
     # Сохраняем варианты ответа в последний вопрос
     test_data["questions"][-1]["answers"] = valid_options
-    await state.update_data(test_data=test_data, answers=valid_options)  # ✅ Обновляем state, включая answers
+    await state.update_data(test_data=test_data, answers=valid_options)  # Обновляем state, включая answers
 
     # Формируем сообщение со списком вариантов
     answers_list = "\n".join([f"{i + 1}. {ans}" for i, ans in enumerate(valid_options)])

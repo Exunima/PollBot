@@ -1,5 +1,4 @@
-# validate_input.py
-
+# Проверка корректности названия теста/опроса
 def is_valid_title(title: str) -> bool:
     """
     Проверяет название теста/опроса:
@@ -14,6 +13,7 @@ def is_valid_title(title: str) -> bool:
     return True
 
 
+# Проверка текста вопроса на уникальность и длину
 def is_valid_question(question: str, existing_questions: list) -> bool:
     """
     Проверяет, что вопрос:
@@ -28,6 +28,7 @@ def is_valid_question(question: str, existing_questions: list) -> bool:
     return True
 
 
+# Проверка вариантов ответа (уникальность, количество)
 def validate_options(options: list) -> list:
     """
     Проверяет варианты ответов:
@@ -42,6 +43,7 @@ def validate_options(options: list) -> list:
     return options if 2 <= len(options) <= 10 else []
 
 
+# Проверка корректных номеров правильных ответов
 def validate_correct_answers(correct_answers: str, total_answers: int) -> list:
     """
     Проверяет номера правильных ответов:
@@ -52,6 +54,7 @@ def validate_correct_answers(correct_answers: str, total_answers: int) -> list:
     return [num for num in selected if 1 <= num <= total_answers]
 
 
+# Проверка количества дней для опроса
 def validate_days(days: str) -> int:
     """
     Проверяет корректность количества дней для опроса.
@@ -64,6 +67,7 @@ def validate_days(days: str) -> int:
     return days if 1 <= days <= 365 else 0
 
 
+# Проверка количества попыток
 def validate_attempts(attempts: str) -> int:
     """
     Проверяет количество попыток для тестов:
@@ -76,6 +80,7 @@ def validate_attempts(attempts: str) -> int:
     return attempts if 0 <= attempts <= 10 else -1
 
 
+# Проверка продолжительности теста в минутах
 def validate_duration(minutes: str) -> int:
     """
     Проверяет, сколько минут даётся на прохождение теста.

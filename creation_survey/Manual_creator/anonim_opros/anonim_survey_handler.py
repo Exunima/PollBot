@@ -1,5 +1,6 @@
 from aiogram import Router
 
+# Импортируем все обработчики анонимного опроса по этапам
 from creation_survey.Manual_creator.anonim_opros.start_anon_survey import router as start_router
 from creation_survey.Manual_creator.anonim_opros.validate_anon_survey import router as validate_router
 from creation_survey.Manual_creator.anonim_opros.question_handler import router as question_router

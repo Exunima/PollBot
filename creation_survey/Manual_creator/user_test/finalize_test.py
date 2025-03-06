@@ -8,12 +8,13 @@ from creation_survey.Manual_creator.validate_input import validate_options, vali
 router = Router()
 
 
+# Завершение добавления вопросов и правильных ответов в тесте
 @router.message(TestState.waiting_for_answers)
 async def save_question(message: types.Message, state: FSMContext):
     """
-    Шаг, где пользователь вводит варианты ответов через ';'.
-    Мы сохраняем их в state['answers'] и переходим к шагу, где пользователь укажет, какие варианты правильные.
+    Сохраняем введенные варианты ответов в state.
     """
+    # Проверяем введенные ответы
     raw_answers = [a.strip() for a in message.text.split(";") if a.strip()]
     valid_answers = validate_options(raw_answers)
 
@@ -38,7 +39,7 @@ async def save_correct_answers(message: types.Message, state: FSMContext):
     Нужно сохранить их в текущем вопросе внутри test_data.
     """
     data = await state.get_data()
-    answers = data.get("answers", [])  # ✅ Теперь answers точно берётся из state
+    answers = data.get("answers", [])  # answers точно берётся из state
     test_data = data.get("test_data", {})
     questions = test_data.get("questions", [])
 
@@ -58,21 +59,21 @@ async def save_correct_answers(message: types.Message, state: FSMContext):
     # Получаем последний вопрос (текущий)
     last_question = questions[-1]
 
-    # ✅ Создаём список правильных ответов
+    # Создаём список правильных ответов
     correct_answers_list = [answers[i - 1] for i in selected_answers]
 
-    # ✅ Связываем правильные ответы с вопросом в ManyToMany
+    # Связываем правильные ответы с вопросом в ManyToMany
     last_question["correct_answers"] = correct_answers_list
 
-    # ✅ Сохраняем обновленный вопрос в test_data
+    # Сохраняем обновленный вопрос в test_data
     questions[-1] = last_question
     test_data["questions"] = questions
 
-    # ✅ Обновляем state
+    # Обновляем state
     await state.update_data(test_data=test_data)
 
     await message.answer(
-        "✅ Вопрос добавлен! Хотите ли вы добавить еще один вопрос?",
+        "Вопрос добавлен! Хотите ли вы добавить еще один вопрос?",
         reply_markup=test_creation_keyboard()
     )
     await state.set_state(TestState.continue_or_finish)

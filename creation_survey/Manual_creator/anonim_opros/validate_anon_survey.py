@@ -11,6 +11,9 @@ router = Router()
 
 @router.message(AnonymousSurveyState.waiting_for_title)
 async def ask_survey_duration_days(message: types.Message, state: FSMContext):
+    """
+    Сохраняем название опроса и запрашиваем его длительность в днях.
+    """
     title = message.text.strip()
 
     if not is_valid_title(title):
@@ -30,6 +33,9 @@ async def ask_survey_duration_days(message: types.Message, state: FSMContext):
 
 @router.message(AnonymousSurveyState.waiting_for_days)
 async def get_survey_days(message: types.Message, state: FSMContext):
+    """
+    Сохраняем длительность опроса и переходим к добавлению вопросов.
+    """
     days_str = message.text.strip()
     duration_days = validate_days(days_str)
 

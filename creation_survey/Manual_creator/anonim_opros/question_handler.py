@@ -13,6 +13,9 @@ router = Router()
 
 @router.message(AnonymousSurveyState.waiting_for_question)
 async def get_question_text(message: types.Message, state: FSMContext):
+    """
+    Получаем текст вопроса, проверяем его валидность и добавляем в опрос.
+    """
     question_text = message.text.strip()
 
     data = await state.get_data()
@@ -32,6 +35,9 @@ async def get_question_text(message: types.Message, state: FSMContext):
 
 @router.message(AnonymousSurveyState.waiting_for_option)
 async def add_options(message: types.Message, state: FSMContext):
+    """
+    Добавляем варианты ответа для последнего вопроса.
+    """
     options = [opt.strip() for opt in message.text.split(";") if opt.strip()]
     valid_options = validate_options(options)
 
@@ -52,6 +58,6 @@ async def add_options(message: types.Message, state: FSMContext):
 
     await message.answer(
         " Варианты добавлены. Хотите добавить ещё вопрос или выдать ключ?",
-        reply_markup=anonymous_survey_keyboard()  # Теперь ошибок быть не должно
+        reply_markup=anonymous_survey_keyboard()
     )
     await state.set_state(AnonymousSurveyState.confirm_add_question)

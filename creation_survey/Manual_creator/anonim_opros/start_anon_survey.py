@@ -9,6 +9,9 @@ router = Router()
 
 @router.message(lambda message: message.text.strip() == "Анонимный опрос")
 async def start_anonymous_survey(message: types.Message, state: FSMContext):
+    """
+    Проверяем, зарегистрирован ли пользователь, и запрашиваем название опроса.
+    """
     user = await User.get_or_none(telegram_id=message.from_user.id)
 
     if not user or not user.full_name:

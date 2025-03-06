@@ -7,6 +7,7 @@ from creation_survey.Manual_creator.user_test.finalize_test import router as fin
 
 router = Router()
 
+# Подключаем все обработчики создания теста
 router.include_router(start_router)
 router.include_router(params_router)
 router.include_router(questions_router)

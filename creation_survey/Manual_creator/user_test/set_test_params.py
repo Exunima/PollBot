@@ -6,18 +6,19 @@ from creation_survey.Manual_creator.validate_input import is_valid_title, valida
 router = Router()
 
 
+# Установка параметров теста: название, попытки, время
 @router.message(TestState.waiting_for_title)
 async def ask_attempts(message: types.Message, state: FSMContext):
     title = message.text.strip()
 
     if not is_valid_title(title):
-        await message.answer("❌ Название теста должно содержать от 3 до 100 символов и не включать спецсимволы.")
+        await message.answer("❌ Название от 3 до 100 символов, без спецсимволов.")
         return
 
     data = await state.get_data()
     test_data = data.get("test_data", {})
 
-    # ✅ Гарантированно сохраняем title в test_data
+    # Гарантированно сохраняем title в test_data
     test_data["title"] = title
     await state.update_data(test_data=test_data)
 
@@ -38,7 +39,7 @@ async def ask_test_duration(message: types.Message, state: FSMContext):
     data = await state.get_data()
     test_data = data.get("test_data", {})
 
-    # ✅ Сохраняем attempts в test_data
+    # Сохраняем attempts в test_data
     test_data["attempts"] = attempts
 
     await state.update_data(test_data=test_data)
@@ -58,11 +59,10 @@ async def ask_first_question(message: types.Message, state: FSMContext):
     data = await state.get_data()
     test_data = data.get("test_data", {})
 
-    # ✅ Сохраняем duration_minutes в test_data
+    # Сохраняем duration_minutes в test_data
     test_data["duration_minutes"] = duration
 
     await state.update_data(test_data=test_data)
 
     await message.answer("Введите первый вопрос:")
     await state.set_state(TestState.waiting_for_question)
-
