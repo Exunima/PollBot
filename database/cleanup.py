@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 
 async def cleanup_expired_records():
-    now = datetime.now(timezone.utc)  # ✅ Теперь now учитывает временную зону UTC
+    now = datetime.now(timezone.utc)  # now учитывает временную зону UTC
 
     # Очистка устаревших опросов
     surveys = await Survey.all()
