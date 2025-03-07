@@ -12,8 +12,8 @@ from database.base import init_db, close_db
 
 # Импорт роутеров
 from screch.router import router as quiz_router
-from profile.p_profile import router as profile_router
-from profile.name_handler import (
+from user_profile.p_profile import router as profile_router
+from user_profile.name_handler import (
     check_and_ask_name,
     process_name,
     process_name_change

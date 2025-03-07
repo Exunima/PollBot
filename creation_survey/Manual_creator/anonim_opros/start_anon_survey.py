@@ -1,7 +1,7 @@
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from database.tables.users import User
-from profile.name_handler import check_and_ask_name
+from user_profile.name_handler import check_and_ask_name
 from config.state_config import AnonymousSurveyState
 
 router = Router()

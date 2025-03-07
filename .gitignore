@@ -15,3 +15,10 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+
+# Исключаем deepseek_models
+deepseek_models/
+
+# Виртуальные окружения
+.venv/
+ner_model/.venv/

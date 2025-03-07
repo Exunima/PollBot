@@ -5,8 +5,8 @@ from aiogram.fsm.context import FSMContext
 from keyboards.button_creators.profile_keyboard import create_profile_keyboard
 
 # Импорты из базы данных и других модулей профиля
-from profile.name_handler import get_user_name
-from profile.show_tests import show_user_tests, show_user_surveys
+from user_profile.name_handler import get_user_name
+from user_profile.show_tests import show_user_tests, show_user_surveys
 
 
 router = Router()
