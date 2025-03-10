@@ -1,4 +1,5 @@
 from aiogram import Router, types
+from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
 from config.state_config import SurveyState
@@ -20,9 +21,9 @@ async def handle_pdf_upload(message: types.Message, state: FSMContext):
 
 
 @router.message(StateFilter(SurveyState.waiting_for_pdf), lambda message: message.document is not None)
-async def process_pdf_file(message: types.Message, state: FSMContext):
+async def process_pdf_file(message: types.Message, state: FSMContext, bot: Bot):
     """ Пользователь отправил PDF """
-    await process_pdf_document(message, state)
+    await process_pdf_document(message, state, bot)
 
 
 @router.message(lambda message: message.text == "Отправить фото")

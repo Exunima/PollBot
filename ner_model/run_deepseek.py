@@ -35,9 +35,15 @@ generator = pipeline(
 )
 
 # Пример текста для генерации
-prompt = "Привет! Расскажи о возможностях DeepSeek LLM."
+prompt = "Какие функции есть у DeepSeek LLM? Объясни подробно."
 
 # Генерируем ответ
-result = generator(prompt, max_new_tokens=200, do_sample=True)
+result = generator(
+    prompt,
+    max_new_tokens=500,  # Дадим модели больше места для генерации
+    temperature=0.7,  # Немного увеличиваем случайность
+    top_p=0.9,  # Усредняем вероятности слов
+    do_sample=True
+)
 
 print(result[0]["generated_text"])
