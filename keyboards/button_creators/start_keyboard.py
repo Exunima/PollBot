@@ -2,7 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from profile.name_handler import check_and_ask_name, process_name, process_name_change
+from user_profile.name_handler import check_and_ask_name, process_name, process_name_change
 
 
 # Определяем состояния

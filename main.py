@@ -18,6 +18,7 @@ from user_profile.name_handler import (
     process_name,
     process_name_change
 )
+from keyboards.button_handlers.survey_file_handler import router as survey_file_router
 from keyboards.button_handlers.back_keyboards import router as back_router
 from keyboards.button_handlers.survey_handler import router as survey_router
 from creation_survey.Manual_creator.user_test.handlers import router as create_survey_router
@@ -58,6 +59,7 @@ dp.include_router(create_survey_router)
 dp.include_router(survey_router)
 dp.include_router(anonim_survey_router)
 dp.include_router(quiz_router)
+dp.include_router(survey_file_router)
 
 
 # Обработка команды /start — проверяем, указано ли имя пользователя

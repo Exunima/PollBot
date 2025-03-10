@@ -29,3 +29,9 @@ class QuizState(StatesGroup):
     waiting_for_key = State()        # Ожидание ключа для теста/опроса
     confirm_start = State()          # Подтверждение начала
     waiting_for_answer = State()     # Ожидание ответа пользователя
+
+
+class SurveyState(StatesGroup):
+    waiting_for_pdf = State()
+    waiting_for_photo = State()
+    confirming_survey = State()
