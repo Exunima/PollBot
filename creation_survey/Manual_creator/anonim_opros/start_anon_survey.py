@@ -7,7 +7,7 @@ from config.state_config import AnonymousSurveyState
 router = Router()
 
 
-@router.message(lambda message: message.text.strip() == "Анонимный опрос")
+@router.message(lambda message: message.text and message.text.strip() == "Анонимный опрос")
 async def start_anonymous_survey(message: types.Message, state: FSMContext):
     """
     Проверяем, зарегистрирован ли пользователь, и запрашиваем название опроса.
