@@ -2,7 +2,7 @@ import os
 from aiogram import types, Bot
 from aiogram.fsm.context import FSMContext
 from creation_survey.PDF_creator.pdf_handler import extract_text_from_pdf
-from ner_model.deepseek_processor import process_text_with_deepseek
+from ner_model.mistral_processor import process_text_with_mistral
 from database.tables.survey_data import Survey, SurveyQuestion, SurveyAnswerOption
 from database.tables.test_data import Test, TestQuestion, TestAnswerOption
 
@@ -35,7 +35,7 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
 
     await message.answer("🔍 Отправляю текст в DeepSeek для анализа...")
 
-    structured_data = process_text_with_deepseek(cleaned_text)
+    structured_data = process_text_with_mistral(cleaned_text)
 
     if not structured_data:
         await message.answer("❌ DeepSeek вернул некорректные данные. Попробуйте снова.")

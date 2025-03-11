@@ -16,8 +16,8 @@ __pycache__/
 .vscode/
 .idea/
 
-# Исключаем deepseek_models
-deepseek_models/
+# Исключаем Mistral-7B
+Mistral-7B/
 
 # Виртуальные окружения
 .venv/
