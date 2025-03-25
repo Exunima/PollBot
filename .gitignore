@@ -19,6 +19,9 @@ __pycache__/
 # Исключаем Mistral-7B
 Mistral-7B/
 
+# Исключаем временные файлы
+temp_files/
+
 # Виртуальные окружения
 .venv/
 ner_model/.venv/

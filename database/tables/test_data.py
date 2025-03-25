@@ -34,7 +34,7 @@ class Test(models.Model):
 
     def get_expiration_date(self) -> datetime:
         """
-        Пример упрощённой схемы: храним тест ровно 7 дней в БД, затем удаляем.
+        Храним тест ровно 7 дней в БД, затем удаляем.
         Или меняйте логику как нужно.
         """
         return self.created_at + timedelta(days=7)

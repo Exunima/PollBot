@@ -1,5 +1,3 @@
-# database/tables/survey_data.py
-
 from tortoise import fields, models
 from enum import Enum
 import uuid
@@ -43,7 +41,7 @@ class Survey(models.Model):
 
     def get_expiration_date(self) -> datetime:
         """
-        Пример: базовый срок жизни 7 дней,
+        Базовый срок жизни 7 дней,
         если у пользователя есть 'duration_days', то +7.
         """
         base_lifetime = 7
@@ -56,7 +54,6 @@ class Survey(models.Model):
 class QuestionType(str, Enum):
     POLL = "poll"
     # Если нужно, можно добавить другие варианты,
-    # но важно, чтобы не путать с TEST (это другая таблица)
 
 
 class SurveyQuestion(models.Model):
