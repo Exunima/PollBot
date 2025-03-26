@@ -35,9 +35,16 @@ async def process_test_answer(message: types.Message, state: FSMContext):
 
     if quiz_type == "survey":
         # Проверяем и сохраняем ответ на опрос
-        answer_option = await SurveyAnswerOption.get_or_none(option_text=message.text, question_id=question_id)
+        selected_num = message.text.strip()
+        option_id = current_options.get(selected_num)
+
+        if not option_id:
+            await message.answer("❌ Ошибка! Введите номер из предложенных вариантов.")
+            return
+
+        answer_option = await SurveyAnswerOption.get_or_none(id=option_id)
         if not answer_option:
-            await message.answer("❌ Ошибка! Выберите вариант из предложенных.")
+            await message.answer("❌ Ошибка! Вариант не найден.")
             return
 
         await SurveyResponse.create(
