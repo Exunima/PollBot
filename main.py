@@ -23,6 +23,7 @@ from keyboards.button_handlers.back_keyboards import router as back_router
 from keyboards.button_handlers.survey_handler import router as survey_router
 from creation_survey.Manual_creator.user_test.handlers import router as create_survey_router
 from creation_survey.Manual_creator.anonim_opros.anonim_survey_handler import router as anonim_survey_router
+from keyboards.button_handlers.doc_type_handlers import router as doc_type_router
 
 # Импорт состояний и токена
 from config.state_config import UserState
@@ -60,6 +61,7 @@ dp.include_router(survey_router)
 dp.include_router(anonim_survey_router)
 dp.include_router(quiz_router)
 dp.include_router(survey_file_router)
+dp.include_router(doc_type_router)
 
 
 # Обработка команды /start — проверяем, указано ли имя пользователя

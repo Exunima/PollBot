@@ -10,16 +10,6 @@ from creation_survey.PDF_creator.pdf_processor import process_pdf_document
 router = Router()
 
 
-@router.message(lambda message: message.text == "Отправить PDF")
-async def handle_pdf_upload(message: types.Message, state: FSMContext):
-    """ Пользователь нажал кнопку 'Отправить PDF' """
-    await state.set_state(SurveyState.waiting_for_pdf)
-    await message.answer(
-        "📄 Пожалуйста, отправьте PDF-файл с вопросами.",
-        reply_markup=create_survey_keyboard()
-    )
-
-
 @router.message(StateFilter(SurveyState.waiting_for_pdf), lambda message: message.document is not None)
 async def process_pdf_file(message: types.Message, state: FSMContext, bot: Bot):
     """ Пользователь отправил PDF """
