@@ -55,10 +55,11 @@ def process_text_with_mistral(text: str, prompt_type: str, filename: str = "Бе
 
     result = generator(
         prompt,
-        max_new_tokens=700,
-        temperature=0.1,
-        repetition_penalty=1.2,
-        do_sample=False
+        max_new_tokens=1000,
+        temperature=0.5,
+        top_p=0.95,
+        repetition_penalty=1.1,
+        do_sample=True
     )[0]["generated_text"]
 
     print("🔍 Ответ модели:\n", result)
