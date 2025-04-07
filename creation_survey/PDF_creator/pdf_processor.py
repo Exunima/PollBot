@@ -35,6 +35,8 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
     extracted_text = extract_text_from_pdf(file_path)
     cleaned_text = "\n".join([line.strip() for line in extracted_text.split("\n") if line.strip()])
 
+    real_question_count = cleaned_text.lower().count("ответ:")
+
     if not cleaned_text:
         await message.answer("❌ Не удалось извлечь текст из PDF.")
         await state.clear()
@@ -44,7 +46,14 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
 
     user_data = await state.get_data()
     prompt_type = user_data.get("document_type", "survey")
-    structured_data = process_text_with_mistral(cleaned_text, prompt_type)
+    structured_data = process_text_with_mistral(cleaned_text, prompt_type, filename=pdf.file_name)
+
+    if "questions" in structured_data and isinstance(structured_data["questions"], list):
+        # Удаляем обрезание:
+        # structured_data["questions"] = structured_data["questions"][:real_question_count]
+
+        print(f"🔢 Вопросов найдено в PDF по 'Ответ:': {real_question_count}")
+        print(f"🔢 Вопросов передано в БД: {len(structured_data['questions'])}")
 
     if isinstance(structured_data, str):
         try:
@@ -81,6 +90,9 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
         )
 
         for q in structured_data["questions"]:
+            if not q.get("text") or not q.get("options"):
+                continue
+
             question = await SurveyQuestion.create(
                 survey=survey,
                 question_text=q["text"],
@@ -106,6 +118,15 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
         )
 
         for q in structured_data["questions"]:
+            # Валидация вопроса
+            if not q.get("text") or not q.get("options"):
+                continue
+
+            correct_exists = any(opt.get("correct", False) for opt in q["options"])
+            if not correct_exists:
+                continue
+
+            # Сохраняем только валидные вопросы
             question = await TestQuestion.create(test=test, question_text=q["text"])
             option_objs = []
 

@@ -43,7 +43,7 @@ def clean_json_keys(json_data):
     return json_data
 
 
-def process_text_with_mistral(text: str, prompt_type: str):
+def process_text_with_mistral(text: str, prompt_type: str, filename: str = "Без названия"):
     try:
         with open(f"prompts/{prompt_type}_prompt.txt", encoding="utf-8") as f:
             prompt_template = f.read()
@@ -53,24 +53,40 @@ def process_text_with_mistral(text: str, prompt_type: str):
     safe_text = text.replace("{", "{{").replace("}", "}}")
     prompt = prompt_template.replace("{text}", safe_text)
 
-    result = generator(prompt, max_new_tokens=1500, temperature=0.1, top_p=0.9,
-                       repetition_penalty=1.2, do_sample=True)[0]["generated_text"]
+    result = generator(
+        prompt,
+        max_new_tokens=700,
+        temperature=0.1,
+        repetition_penalty=1.2,
+        do_sample=False
+    )[0]["generated_text"]
 
     print("🔍 Ответ модели:\n", result)
     extracted_json = extract_json(result)
     if not extracted_json:
-        return {"type": prompt_type, "title": "Без названия", "questions": []}
+        return {
+            "type": prompt_type,
+            "title": filename.rsplit(".", 1)[0],
+            "questions": []
+        }
 
     try:
         structured_data = json.loads(extracted_json)
         if isinstance(structured_data, list) and len(structured_data) > 0:
             structured_data = structured_data[0]
     except json.JSONDecodeError:
-        return {"type": prompt_type, "title": "Без названия", "questions": []}
+        return {
+            "type": prompt_type,
+            "title": filename.rsplit(".", 1)[0],
+            "questions": []
+        }
 
     structured_data = clean_json_keys(structured_data)
     structured_data.setdefault("type", prompt_type)
-    structured_data.setdefault("title", "Без названия")
-    structured_data.setdefault("questions", [])
 
+    # ✅ Название из файла, если модель не вернула
+    if "title" not in structured_data or not structured_data["title"].strip():
+        structured_data["title"] = filename.rsplit(".", 1)[0]
+
+    structured_data.setdefault("questions", [])
     return structured_data
