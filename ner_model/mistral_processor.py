@@ -31,8 +31,26 @@ def extract_json(text):
     text = text.strip()
     text = re.sub(r"```json", "", text)
     text = re.sub(r"```", "", text)
-    match = re.search(r"{.*?}", text, re.DOTALL)
-    return match.group(0).strip() if match else None
+
+    # Поиск всех блоков JSON по скобкам
+    results = []
+    brace_stack = []
+    start_idx = None
+
+    for i, char in enumerate(text):
+        if char == '{':
+            if start_idx is None:
+                start_idx = i
+            brace_stack.append('{')
+        elif char == '}':
+            if brace_stack:
+                brace_stack.pop()
+                if not brace_stack and start_idx is not None:
+                    results.append(text[start_idx:i+1].strip())
+                    start_idx = None
+
+    # Возвращаем последний валидный блок (финальный ответ)
+    return results[-1] if results else None
 
 
 def clean_json_keys(json_data):
@@ -55,7 +73,7 @@ def process_text_with_mistral(text: str, prompt_type: str, filename: str = "Бе
 
     result = generator(
         prompt,
-        max_new_tokens=1000,
+        max_new_tokens=1100,
         temperature=0.5,
         top_p=0.95,
         repetition_penalty=1.1,
@@ -85,8 +103,9 @@ def process_text_with_mistral(text: str, prompt_type: str, filename: str = "Бе
     structured_data = clean_json_keys(structured_data)
     structured_data.setdefault("type", prompt_type)
 
-    # ✅ Название из файла, если модель не вернула
-    if "title" not in structured_data or not structured_data["title"].strip():
+    # Название из файла, если модель не вернула строку
+    title_val = structured_data.get("title")
+    if not isinstance(title_val, str) or not title_val.strip():
         structured_data["title"] = filename.rsplit(".", 1)[0]
 
     structured_data.setdefault("questions", [])

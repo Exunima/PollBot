@@ -177,6 +177,10 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
                 logging.warning(f"[TEST] Пропущен вопрос #{i}, т.к. text или options пустые. text='{text_val}', options='{options_val}'")
                 continue
 
+            if not any(opt.get("correct", False) for opt in options_val if isinstance(opt, dict)):
+                logging.warning(f"[TEST] Пропущен вопрос #{i}, нет правильных ответов (correct=true)")
+                continue
+
             question = await TestQuestion.create(
                 test=test,
                 question_text=text_val
