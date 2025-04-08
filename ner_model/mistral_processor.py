@@ -28,11 +28,14 @@ print("✅ Mistral-7B загружена!")
 
 
 def extract_json(text):
+    """
+    Ищет все JSON-блоки по скобкам и возвращает последний валидный блок,
+    в котором есть вопросы (questions > 0).
+    """
     text = text.strip()
     text = re.sub(r"```json", "", text)
     text = re.sub(r"```", "", text)
 
-    # Поиск всех блоков JSON по скобкам
     results = []
     brace_stack = []
     start_idx = None
@@ -49,8 +52,21 @@ def extract_json(text):
                     results.append(text[start_idx:i+1].strip())
                     start_idx = None
 
-    # Возвращаем последний валидный блок (финальный ответ)
-    return results[-1] if results else None
+    # Парсим с конца — ищем последний валидный JSON с questions > 0
+    for block in reversed(results):
+        try:
+            data = json.loads(block)
+
+            # Удаляем лишний корневой "options", если случайно попал
+            if isinstance(data, dict) and "options" in data and isinstance(data["options"], list):
+                del data["options"]
+
+            if "questions" in data and isinstance(data["questions"], list) and len(data["questions"]) > 0:
+                return data
+        except json.JSONDecodeError:
+            continue
+
+    return None  # Ничего не найдено
 
 
 def clean_json_keys(json_data):
@@ -89,16 +105,7 @@ def process_text_with_mistral(text: str, prompt_type: str, filename: str = "Бе
             "questions": []
         }
 
-    try:
-        structured_data = json.loads(extracted_json)
-        if isinstance(structured_data, list) and len(structured_data) > 0:
-            structured_data = structured_data[0]
-    except json.JSONDecodeError:
-        return {
-            "type": prompt_type,
-            "title": filename.rsplit(".", 1)[0],
-            "questions": []
-        }
+    structured_data = extracted_json  # ❗ Убираем json.loads
 
     structured_data = clean_json_keys(structured_data)
     structured_data.setdefault("type", prompt_type)

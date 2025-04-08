@@ -1,6 +1,6 @@
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
-from config.state_config import SurveyState
+from config.state_config import TestFromPdfState, SurveyFromPdfState
 from keyboards.button_creators.choose_doc_type_keyboard import choose_doc_type_keyboard
 
 router = Router()
@@ -12,14 +12,14 @@ async def ask_type(message: types.Message, state: FSMContext):
 
 
 @router.message(lambda m: m.text == "📘 Тест")
-async def set_test(message: types.Message, state: FSMContext):
+async def start_test_pdf(message: types.Message, state: FSMContext):
     await state.update_data(document_type="test")
-    await state.set_state(SurveyState.waiting_for_pdf)
-    await message.answer("Отправьте PDF-файл с тестом.")
+    await message.answer("⏱️ Сколько времени будет дано на прохождение теста? (в минутах, 0 — без ограничения)")
+    await state.set_state(TestFromPdfState.waiting_for_duration)
 
 
 @router.message(lambda m: m.text == "📋 Опрос")
-async def set_survey(message: types.Message, state: FSMContext):
+async def start_survey_pdf(message: types.Message, state: FSMContext):
     await state.update_data(document_type="survey")
-    await state.set_state(SurveyState.waiting_for_pdf)
-    await message.answer("Отправьте PDF-файл с опросом.")
+    await message.answer("📅 Укажите срок действия опроса в днях (0 — без ограничения):")
+    await state.set_state(SurveyFromPdfState.waiting_for_duration)

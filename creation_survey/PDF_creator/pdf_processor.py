@@ -42,6 +42,12 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
 
     if not cleaned_text:
         await message.answer("❌ Не удалось извлечь текст из PDF.")
+
+        # Удаляем PDF-файл после завершения
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            logging.info(f"PDF удалён после обработки: {file_path}")
+
         await state.clear()
         return
 
@@ -49,6 +55,12 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
 
     # 3) Узнаём, что выбрал пользователь (test/survey)
     user_data = await state.get_data()
+
+    duration_minutes = int(user_data.get("duration_minutes", 0))
+    attempts = int(user_data.get("attempts", 1))
+    duration_days = int(user_data.get("duration_days", 0))
+    document_type = user_data.get("document_type", "test")
+
     prompt_type = user_data.get("document_type", "survey")  # по умолчанию survey
     logging.info(f"document_type (prompt_type) = {prompt_type}")
 
@@ -99,6 +111,12 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
     if not user:
         logging.warning(f"Пользователь с telegram_id={message.from_user.id} не найден в БД.")
         await message.answer("❌ Пользователь не найден в БД.")
+
+        # Удаляем PDF-файл после завершения
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            logging.info(f"PDF удалён после обработки: {file_path}")
+
         await state.clear()
         return
 
@@ -115,8 +133,9 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
             is_anonymous=False,
             access_key=access_key,
             attempts=1,
-            duration_days=0
+            duration_days=duration_days
         )
+
         logging.info(f"Создан Survey c ID={survey.id}, title={survey.survey_title}")
 
         saved_count = 0
@@ -152,8 +171,9 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
 
         await message.answer(
             f"✅ Опрос «{survey.survey_title}» сохранён!\n"
+            f"📅 Дней на прохождение: {duration_days if duration_days else 'без ограничений'}\n"
             f"🔑 Ключ доступа: <code>{access_key}</code>\n"
-            f"Вопросов добавлено: {saved_count}",
+            f"📌 Вопросов добавлено: {saved_count}",
             parse_mode="HTML"
         )
 
@@ -161,8 +181,8 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
         test = await Test.create(
             creator=user,
             title=title_in_json,
-            duration_minutes=30,
-            attempts=1,
+            duration_minutes=duration_minutes,
+            attempts=attempts,
             access_key=access_key
         )
         logging.info(f"Создан Test c ID={test.id}, title={test.title}")
@@ -216,8 +236,10 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
 
         await message.answer(
             f"✅ Тест «{test.title}» сохранён!\n"
+            f"⏱️ Время на прохождение: {duration_minutes} мин.\n"
+            f"🔁 Попыток: {'неограниченно' if attempts == 0 else attempts}\n"
             f"🔑 Ключ доступа: <code>{access_key}</code>\n"
-            f"Вопросов добавлено: {saved_count}",
+            f"📌 Вопросов добавлено: {saved_count}",
             parse_mode="HTML"
         )
 
@@ -227,5 +249,11 @@ async def process_pdf_document(message: types.Message, state: FSMContext, bot: B
 
     # Завершение
     await message.answer("🎯 Можете начать прохождение теста или опроса!")
+
+    # Удаляем PDF-файл после завершения
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        logging.info(f"PDF удалён после обработки: {file_path}")
+
     await state.clear()
     logging.info("process_pdf_document завершён успешно.")

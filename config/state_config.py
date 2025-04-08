@@ -35,3 +35,14 @@ class SurveyState(StatesGroup):
     waiting_for_pdf = State()
     waiting_for_photo = State()
     confirming_survey = State()
+
+
+class TestFromPdfState(StatesGroup):
+    waiting_for_duration = State()
+    waiting_for_attempts = State()
+    waiting_for_pdf = State()
+
+
+class SurveyFromPdfState(StatesGroup):
+    waiting_for_duration = State()
+    waiting_for_pdf = State()
