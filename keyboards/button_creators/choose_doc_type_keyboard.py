@@ -8,5 +8,6 @@ def choose_doc_type_keyboard():
             [KeyboardButton(text="📋 Опрос")],
             [KeyboardButton(text="🔙 Назад")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent=True
     )

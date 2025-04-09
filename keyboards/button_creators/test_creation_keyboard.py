@@ -8,6 +8,7 @@ def test_creation_keyboard():
             [KeyboardButton(text="Завершить")],
             [KeyboardButton(text="🔙 Назад")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent=True
     )
     return keyboard

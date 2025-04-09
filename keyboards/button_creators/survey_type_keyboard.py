@@ -8,6 +8,7 @@ def survey_type_keyboard():
             [KeyboardButton(text="Анонимный опрос")],
             [KeyboardButton(text="🔙 Назад")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent=True
     )
     return keyboard

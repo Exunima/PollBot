@@ -8,5 +8,6 @@ def anonymous_survey_keyboard():
             [KeyboardButton(text="Выдать ключ")],
             [KeyboardButton(text="🔙 Назад")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent = True
     )

@@ -8,6 +8,7 @@ def get_quiz_start_keyboard():
             [KeyboardButton(text="Начать")],
             [KeyboardButton(text="🔙 Назад")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent=True
     )
     return keyboard

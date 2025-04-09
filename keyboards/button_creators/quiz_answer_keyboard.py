@@ -7,5 +7,6 @@ def get_answer_confirm_keyboard():
         keyboard=[
             [KeyboardButton(text="🔙 Назад")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent=True
     )

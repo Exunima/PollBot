@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from database.tables.survey_data import Survey, SurveyQuestion, SurveyType, QuestionType, SurveyAnswerOption
+from keyboards.button_creators.start_keyboard import create_start_keyboard
 from database.tables.test_data import Test, TestQuestion, TestAnswerOption
 from database.tables.users import User
 from config.state_config import TestState
@@ -66,8 +67,14 @@ async def handle_finish(message: types.Message, state: FSMContext):
         f"🔄 Попытки: {test.attempts if test.attempts else 'Неограниченно'}"
     )
 
-    await message.answer(formatted_message, parse_mode="HTML")
+    await message.answer(
+        formatted_message,
+        parse_mode="HTML",
+        reply_markup=create_start_keyboard()
+    )
+
     await state.clear()
+    return
 
 
 # Обработчик кнопки "Выдать ключ" (для анонимного опроса)
@@ -113,5 +120,11 @@ async def handle_anonymous_finish(message: types.Message, state: FSMContext):
         f"{hbold('Скопируйте этот ключ для распространения')}"
     )
 
-    await message.answer(formatted_message, parse_mode="HTML")
+    await message.answer(
+        formatted_message,
+        parse_mode="HTML",
+        reply_markup=create_start_keyboard()
+    )
+
     await state.clear()
+    return

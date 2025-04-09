@@ -11,7 +11,7 @@ def create_profile_keyboard():
             [KeyboardButton(text="🔙 Назад")]
         ],
         resize_keyboard=True,
-        one_time_keyboard=True,
-        input_field_placeholder="Выберите действие"
+        is_persistent=True,
+        input_field_placeholder="Выберите действие",
     )
     return keyboard

@@ -19,7 +19,8 @@ def create_start_keyboard():
             [KeyboardButton(text="Создать опрос")],
             [KeyboardButton(text="Пройти опрос")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent=True
     )
     return keyboard
 

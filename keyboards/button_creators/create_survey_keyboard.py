@@ -9,6 +9,7 @@ def create_survey_keyboard():
             [KeyboardButton(text="Отправить фото")],
             [KeyboardButton(text="🔙 Назад")]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
+        is_persistent=True
     )
     return keyboard
