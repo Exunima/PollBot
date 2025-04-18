@@ -57,3 +57,8 @@ class TestFromPhotoState(StatesGroup):
 class SurveyFromPhotoState(StatesGroup):
     waiting_for_duration = State()
     waiting_for_photo = State()
+
+
+class ConfirmOCRState(StatesGroup):
+    waiting_for_choice = State()
+    waiting_for_manual_text = State()

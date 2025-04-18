@@ -27,6 +27,7 @@ from creation_survey.Photo_creator.basic_verification.set_test_params_from_photo
 from creation_survey.Photo_creator.basic_verification.set_survey_params_from_photo import router as survey_photo_router
 from keyboards.button_handlers.doc_type_handlers import router as doc_type_router
 from keyboards.button_handlers.photo_type_handlers import router as photo_type_router
+from keyboards.button_handlers import confirm_ocr_handlers
 
 # Импорт состояний и токена
 from config.state_config import UserState
@@ -68,6 +69,7 @@ dp.include_router(doc_type_router)
 dp.include_router(photo_type_router)
 dp.include_router(test_photo_router)
 dp.include_router(survey_photo_router)
+dp.include_router(confirm_ocr_handlers.router)
 
 
 # Обработка команды /start — проверяем, указано ли имя пользователя
