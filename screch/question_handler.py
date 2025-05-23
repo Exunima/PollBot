@@ -26,7 +26,7 @@ async def ask_question(message: types.Message, state: FSMContext, quiz_type, que
 
     await message.answer(
         f"❓ {question.question_text}\n\nВарианты:\n{options_list}"
-        f"\n\nВведите номера выбранных вариантов через ';', затем нажмите Enter или Отправить.",
+        f"\n\nВведите номер(а) выбранных вариантов через ';', затем нажмите Enter или Отправить.",
         reply_markup=get_answer_confirm_keyboard()
     )
     await state.set_state(QuizState.waiting_for_answer)

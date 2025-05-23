@@ -19,5 +19,5 @@ async def start_anonymous_survey(message: types.Message, state: FSMContext):
         return
 
     await state.update_data(survey_data={"creator_id": user.id})
-    await message.answer("Введите название вашего анонимного опроса:")
+    await message.answer("Введите название вашего опроса:")
     await state.set_state(AnonymousSurveyState.waiting_for_title)
