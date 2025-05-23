@@ -26,3 +26,6 @@ temp_files/
 .venv/
 ner_model/.venv/
 ner_model/run_Mistral_7B.py
+
+# Игнорировать файл run_Mistral_7B.py в папке ner_model
+ner_model/run_Mistral_7B.py
